@@ -1,4 +1,5 @@
 import great_expectations as ge
+import pandas as pd
 from typing import Tuple, List
 
 
@@ -13,6 +14,10 @@ def validate_telco_data(df) -> Tuple[bool, List[str]]:
     """
     print("🔍 Starting data validation with Great Expectations...")
     
+    # TotalCharges has blank strings in the raw CSV -> coerce so range checks work
+    df = df.copy()
+    df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce")
+
     # Convert pandas DataFrame to Great Expectations Dataset
     ge_df = ge.dataset.PandasDataset(df)
     
